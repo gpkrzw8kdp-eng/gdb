@@ -5,7 +5,7 @@ Zwei kleine Webseiten plus eine Datenbank:
 | Datei | Zweck |
 |---|---|
 | `index.html` | Formular, über das Schüler:innen Ideen einreichen (Name, Klasse, Kategorie, Idee). |
-| `uebersicht.html` | Übersichtsseite für das Orga-Team: alle Ideen mit Filter nach Kategorie und Klasse, Suche, CSV-Export. Zugang per Zugangscode. Kann auf einer ganz anderen Website liegen. |
+| `uebersicht.html` | Übersichtsseite für das Orga-Team: alle Ideen mit Filter nach Kategorie und Klasse, Suche, CSV-Export, Abhaken und Löschen. Zugang per Zugangscode. Kann auf einer ganz anderen Website liegen. |
 | `supabase-setup.sql` | Legt die Datenbank (Supabase) an. Einmal ausführen. |
 
 Die Daten liegen nicht mehr in Netlify Forms, sondern in einer Supabase-Datenbank. Dadurch kann jede beliebige Website die Einträge anzeigen.
@@ -20,7 +20,7 @@ Die Daten liegen nicht mehr in Netlify Forms, sondern in einer Supabase-Datenban
    - `index.html` wie bisher bei Netlify (oder jedem anderen Hoster) veröffentlichen.
    - `uebersicht.html` auf die andere Website legen (beliebiger Hoster, auch ein zweiter Netlify-Drop). Die Datei ist eigenständig und braucht nur die Supabase-Zugangsdaten.
 
-Der anon-Key darf öffentlich in der HTML-Datei stehen. Er erlaubt nur das, was in der SQL-Datei freigegeben ist: Ideen einreichen und Ideen mit richtigem Zugangscode abrufen. Ein direktes Lesen der Tabelle ist gesperrt.
+Der anon-Key darf öffentlich in der HTML-Datei stehen. Er erlaubt nur das, was in der SQL-Datei freigegeben ist: Ideen einreichen sowie mit richtigem Zugangscode Ideen abrufen, abhaken und löschen. Ein direktes Lesen der Tabelle ist gesperrt.
 
 ## Zugangscode ändern
 

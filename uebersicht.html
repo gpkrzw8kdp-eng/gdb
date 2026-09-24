@@ -144,6 +144,15 @@
   .kat[data-kat="Projekte"]{background:rgba(255,107,107,0.18); border-color:rgba(255,107,107,0.55); color:#ffc4c4;}
   .when{margin-left:auto; color:var(--text-dim); font-size:0.8rem;}
   .text{white-space:pre-wrap; word-break:break-word; line-height:1.55; margin:0;}
+  .idea.done{opacity:0.55;}
+  .idea.done .text{text-decoration:line-through;}
+  .idea-actions{display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:14px; padding-top:12px; border-top:1px solid rgba(255,255,255,0.15);}
+  .check{display:flex; align-items:center; gap:8px; cursor:pointer; font-size:0.9rem; font-weight:600; user-select:none;}
+  .check input{width:18px; height:18px; accent-color:var(--mint); cursor:pointer;}
+  button.danger{margin-left:auto; color:#ffb4b4; border-color:rgba(255,107,107,0.5); background:rgba(255,107,107,0.12);}
+  button.danger:hover{background:rgba(255,107,107,0.25);}
+  .toggle{display:flex; align-items:center; gap:8px; font-size:0.9rem; cursor:pointer; user-select:none; white-space:nowrap;}
+  .toggle input{width:18px; height:18px; accent-color:var(--mint); cursor:pointer;}
   .empty{color:var(--text-dim); text-align:center; padding:30px 0;}
 
   @media (max-width:560px){
@@ -188,6 +197,7 @@
     <div class="stats">
       <span><strong id="countTotal">0</strong> Ideen insgesamt</span>
       <span><strong id="countShown">0</strong> angezeigt</span>
+      <span><strong id="countDone">0</strong> erledigt</span>
       <span id="lastUpdate"></span>
     </div>
 
@@ -198,6 +208,7 @@
       <select id="klasseFilter">
         <option value="">Alle Klassen</option>
       </select>
+      <label class="toggle"><input type="checkbox" id="hideDone"> Erledigte ausblenden</label>
       <button type="button" class="ghost" id="reloadBtn">Neu laden</button>
       <button type="button" class="ghost" id="csvBtn">Als CSV speichern</button>
       <button type="button" class="ghost" id="logoutBtn">Abmelden</button>
@@ -212,8 +223,8 @@
 <script>
   // ── Verbindung zur Datenbank (Supabase) ─────────────────────────────
   // Dieselben Werte wie in index.html eintragen.
-  const SUPABASE_URL = 'https://DEIN-PROJEKT.supabase.co';
-  const SUPABASE_ANON_KEY = 'DEIN-ANON-KEY';
+  const SUPABASE_URL = 'https://cnffcveslvodivfabosd.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNuZmZjdmVzbHZvZGl2ZmFib3NkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAyNzczMDcsImV4cCI6MjEwNTg1MzMwN30.lOOdh-jRbieev2XFSSjr-7Wsag0N7Ut4htHX0xmWYNk';
   // ────────────────────────────────────────────────────────────────────
 
   const KATEGORIEN = ['Abi-Motto', 'Finanzierung', 'Abiball', 'Abizeitung', 'Abi Merch', 'Projekte'];
@@ -248,18 +259,18 @@
     try { code ? sessionStorage.setItem(STORAGE_KEY, code) : sessionStorage.removeItem(STORAGE_KEY); } catch (e) {}
   }
 
-  async function ladeIdeen(code) {
+  async function rpc(funktion, params) {
     if (SUPABASE_URL.includes('DEIN-PROJEKT') || SUPABASE_ANON_KEY === 'DEIN-ANON-KEY') {
       throw new Error('Supabase ist noch nicht eingerichtet (SUPABASE_URL / SUPABASE_ANON_KEY in uebersicht.html eintragen).');
     }
-    const res = await fetch(SUPABASE_URL + '/rest/v1/rpc/ideen_abrufen', {
+    const res = await fetch(SUPABASE_URL + '/rest/v1/rpc/' + funktion, {
       method: 'POST',
       headers: {
         'apikey': SUPABASE_ANON_KEY,
         'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ code })
+      body: JSON.stringify(params)
     });
     if (!res.ok) {
       let msg = 'HTTP ' + res.status;
@@ -271,7 +282,12 @@
       err.falscherCode = /zugangscode/i.test(msg);
       throw err;
     }
-    return await res.json();
+    const text = await res.text();
+    return text ? JSON.parse(text) : null;
+  }
+
+  function ladeIdeen(code) {
+    return rpc('ideen_abrufen', { code });
   }
 
   function renderChips() {
@@ -295,7 +311,9 @@
   function gefiltert() {
     const q = searchEl.value.trim().toLowerCase();
     const kl = klasseFilter.value;
+    const hideDone = document.getElementById('hideDone').checked;
     return ideen.filter(i =>
+      (!hideDone || !i.erledigt) &&
       (!aktiveKategorie || i.kategorie === aktiveKategorie) &&
       (!kl || i.klasse === kl) &&
       (!q || [i.name, i.klasse, i.kategorie, i.idee].join(' ').toLowerCase().includes(q))
@@ -306,12 +324,13 @@
     const rows = gefiltert();
     document.getElementById('countTotal').textContent = ideen.length;
     document.getElementById('countShown').textContent = rows.length;
+    document.getElementById('countDone').textContent = ideen.filter(i => i.erledigt).length;
     if (!rows.length) {
       listEl.innerHTML = '<div class="empty">Keine Ideen gefunden.</div>';
       return;
     }
     listEl.innerHTML = rows.map(i => `
-      <article class="idea">
+      <article class="idea${i.erledigt ? ' done' : ''}" data-id="${i.id}">
         <div class="idea-head">
           <span class="who">${esc(i.name)}</span>
           <span class="klasse">Klasse ${esc(i.klasse)}</span>
@@ -319,6 +338,10 @@
           <span class="when">${esc(fmtDate(i.erstellt_am))}</span>
         </div>
         <p class="text">${esc(i.idee)}</p>
+        <div class="idea-actions">
+          <label class="check"><input type="checkbox" class="doneToggle" data-id="${i.id}"${i.erledigt ? ' checked' : ''}> Erledigt</label>
+          <button type="button" class="ghost danger delBtn" data-id="${i.id}">Löschen</button>
+        </div>
       </article>`).join('');
   }
 
@@ -373,6 +396,45 @@
   });
   searchEl.addEventListener('input', renderList);
   klasseFilter.addEventListener('change', renderList);
+  document.getElementById('hideDone').addEventListener('change', renderList);
+
+  async function aktion(funktion, params, lokal) {
+    listError.textContent = '';
+    try {
+      await rpc(funktion, { code: getCode(), ...params });
+      lokal();
+      renderAll();
+    } catch (err) {
+      console.error(err);
+      listError.textContent = 'Das hat nicht geklappt: ' + err.message;
+      if (err.falscherCode) { setCode(''); listCard.classList.add('hidden'); loginCard.classList.remove('hidden'); loginError.textContent = 'Falscher Zugangscode.'; }
+      else renderAll();
+    }
+  }
+
+  listEl.addEventListener('change', e => {
+    const box = e.target.closest('.doneToggle');
+    if (!box) return;
+    const id = Number(box.dataset.id);
+    const wert = box.checked;
+    aktion('idee_erledigt_setzen', { idee_id: id, wert }, () => {
+      const i = ideen.find(x => x.id === id);
+      if (i) i.erledigt = wert;
+    });
+  });
+
+  listEl.addEventListener('click', e => {
+    const btn = e.target.closest('.delBtn');
+    if (!btn) return;
+    const id = Number(btn.dataset.id);
+    const i = ideen.find(x => x.id === id);
+    if (!i) return;
+    if (!confirm('Idee von ' + i.name + ' (' + i.klasse + ') wirklich löschen?')) return;
+    btn.disabled = true;
+    aktion('idee_loeschen', { idee_id: id }, () => {
+      ideen = ideen.filter(x => x.id !== id);
+    });
+  });
 
   document.getElementById('reloadBtn').addEventListener('click', async e => {
     e.target.disabled = true;
@@ -391,8 +453,8 @@
   document.getElementById('csvBtn').addEventListener('click', () => {
     const rows = gefiltert();
     const cell = v => '"' + String(v ?? '').replace(/"/g, '""') + '"';
-    const lines = [['Datum', 'Name', 'Klasse', 'Kategorie', 'Idee'].map(cell).join(';')];
-    rows.forEach(i => lines.push([fmtDate(i.erstellt_am), i.name, i.klasse, i.kategorie, i.idee].map(cell).join(';')));
+    const lines = [['Datum', 'Name', 'Klasse', 'Kategorie', 'Idee', 'Erledigt'].map(cell).join(';')];
+    rows.forEach(i => lines.push([fmtDate(i.erstellt_am), i.name, i.klasse, i.kategorie, i.idee, i.erledigt ? 'ja' : 'nein'].map(cell).join(';')));
     const blob = new Blob(['﻿' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);

@@ -9,7 +9,8 @@ create table if not exists public.ideen (
   name         text not null check (char_length(name) between 1 and 80),
   klasse       text not null check (char_length(klasse) between 1 and 10),
   kategorie    text not null check (kategorie in ('Abi-Motto', 'Finanzierung', 'Abiball', 'Abizeitung', 'Abi Merch', 'Projekte')),
-  idee         text not null check (char_length(idee) between 1 and 2000)
+  idee         text not null check (char_length(idee) between 1 and 2000),
+  erledigt     boolean not null default false
 );
 
 alter table public.ideen enable row level security;
@@ -59,6 +60,50 @@ $$;
 
 revoke all on function public.ideen_abrufen(text) from public;
 grant execute on function public.ideen_abrufen(text) to anon, authenticated;
+
+-- 4) Ideen abhaken (erledigt) und löschen – ebenfalls nur mit Zugangscode
+alter table public.ideen add column if not exists erledigt boolean not null default false;
+
+create or replace function public.idee_erledigt_setzen(code text, idee_id bigint, wert boolean)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if not exists (
+    select 1 from public.einstellungen
+    where schluessel = 'zugangscode' and wert = code
+  ) then
+    raise exception 'Falscher Zugangscode' using errcode = '28000';
+  end if;
+
+  update public.ideen set erledigt = wert where id = idee_id;
+end;
+$$;
+
+create or replace function public.idee_loeschen(code text, idee_id bigint)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if not exists (
+    select 1 from public.einstellungen
+    where schluessel = 'zugangscode' and wert = code
+  ) then
+    raise exception 'Falscher Zugangscode' using errcode = '28000';
+  end if;
+
+  delete from public.ideen where id = idee_id;
+end;
+$$;
+
+revoke all on function public.idee_erledigt_setzen(text, bigint, boolean) from public;
+revoke all on function public.idee_loeschen(text, bigint) from public;
+grant execute on function public.idee_erledigt_setzen(text, bigint, boolean) to anon, authenticated;
+grant execute on function public.idee_loeschen(text, bigint) to anon, authenticated;
 
 -- Zugangscode später ändern:
 -- update public.einstellungen set wert = 'neuer-code' where schluessel = 'zugangscode';

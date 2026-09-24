@@ -8,7 +8,7 @@ create table if not exists public.ideen (
   erstellt_am  timestamptz not null default now(),
   name         text not null check (char_length(name) between 1 and 80),
   klasse       text not null check (char_length(klasse) between 1 and 10),
-  kategorie    text not null check (kategorie in ('Finanzierung', 'Abiball', 'Abizeitung', 'Abi Merch', 'Projekte')),
+  kategorie    text not null check (kategorie in ('Abi-Motto', 'Finanzierung', 'Abiball', 'Abizeitung', 'Abi Merch', 'Projekte')),
   idee         text not null check (char_length(idee) between 1 and 2000)
 );
 
@@ -62,3 +62,8 @@ grant execute on function public.ideen_abrufen(text) to anon, authenticated;
 
 -- Zugangscode später ändern:
 -- update public.einstellungen set wert = 'neuer-code' where schluessel = 'zugangscode';
+
+-- Falls die Datenbank schon ohne 'Abi-Motto' angelegt wurde, nur das hier ausführen:
+-- alter table public.ideen drop constraint ideen_kategorie_check;
+-- alter table public.ideen add constraint ideen_kategorie_check
+--   check (kategorie in ('Abi-Motto', 'Finanzierung', 'Abiball', 'Abizeitung', 'Abi Merch', 'Projekte'));

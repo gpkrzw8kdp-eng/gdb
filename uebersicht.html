@@ -136,6 +136,7 @@
     background:rgba(255,255,255,0.14); border:1px solid rgba(255,255,255,0.3);
   }
   .kat{font-size:0.8rem; font-weight:700; padding:3px 10px; border-radius:999px; border:1px solid transparent;}
+  .kat[data-kat="Abi-Motto"]{background:rgba(255,255,255,0.16); border-color:rgba(255,255,255,0.55); color:#ffffff;}
   .kat[data-kat="Finanzierung"]{background:rgba(6,214,160,0.18); border-color:rgba(6,214,160,0.55); color:#8ff5d7;}
   .kat[data-kat="Abiball"]{background:rgba(155,93,229,0.2); border-color:rgba(155,93,229,0.6); color:#d9bdfb;}
   .kat[data-kat="Abizeitung"]{background:rgba(78,168,222,0.2); border-color:rgba(78,168,222,0.6); color:#b6dcf5;}
@@ -215,7 +216,7 @@
   const SUPABASE_ANON_KEY = 'DEIN-ANON-KEY';
   // ────────────────────────────────────────────────────────────────────
 
-  const KATEGORIEN = ['Finanzierung', 'Abiball', 'Abizeitung', 'Abi Merch', 'Projekte'];
+  const KATEGORIEN = ['Abi-Motto', 'Finanzierung', 'Abiball', 'Abizeitung', 'Abi Merch', 'Projekte'];
   const STORAGE_KEY = 'abi-orga-zugangscode';
 
   const loginCard = document.getElementById('loginCard');

@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#1b1730">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="robots" content="noindex, nofollow">
+<title>Abi Orga Ideen — Übersicht</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --coral:#FF6B6B;
+    --sun:#FFD166;
+    --sky:#4EA8DE;
+    --violet:#9B5DE5;
+    --mint:#06D6A0;
+    --text:#ffffff;
+    --text-dim:rgba(255,255,255,0.72);
+  }
+  *{box-sizing:border-box;}
+  html{background:#1b1730;}
+  html,body{margin:0;padding:0;}
+  body{
+    min-height:100vh;
+    min-height:100dvh;
+    background-color:#1b1730;
+    background:linear-gradient(160deg, #1b1730 0%, #221c45 50%, #1b1730 100%);
+    font-family:'Inter', sans-serif;
+    color:var(--text);
+    padding:32px 16px 48px;
+    position:relative;
+    overflow-x:hidden;
+  }
+  .bg{position:fixed; inset:0; overflow:hidden; z-index:0; pointer-events:none;}
+  .blob{position:absolute; border-radius:50%; filter:blur(70px); opacity:0.45;}
+  .blob1{width:420px; height:420px; background:var(--coral); top:-140px; left:-120px;}
+  .blob2{width:380px; height:380px; background:var(--sky); bottom:-160px; right:-100px;}
+  .blob3{width:320px; height:320px; background:var(--violet); top:40%; right:-140px;}
+
+  .wrap{position:relative; z-index:1; max-width:960px; margin:0 auto;}
+  .card{
+    background:rgba(255,255,255,0.10);
+    backdrop-filter:blur(22px);
+    -webkit-backdrop-filter:blur(22px);
+    border:1px solid rgba(255,255,255,0.3);
+    border-radius:24px;
+    box-shadow:0 25px 70px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.35);
+    padding:32px 32px 28px;
+    margin-bottom:20px;
+  }
+  .eyebrow{
+    display:inline-block;
+    font-weight:600; font-size:0.8rem; letter-spacing:0.02em;
+    color:var(--sun);
+    background:rgba(255,209,102,0.15);
+    border:1px solid rgba(255,209,102,0.4);
+    padding:5px 14px; border-radius:999px; margin-bottom:14px;
+  }
+  h1{
+    font-family:'Poppins', sans-serif; font-weight:800; font-size:2rem; line-height:1.15; margin:0 0 6px;
+    background:linear-gradient(100deg, #ffffff 20%, var(--sun) 55%, var(--coral) 85%);
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+  }
+  .subtitle{color:var(--text-dim); margin:0 0 22px;}
+  label{display:block; font-family:'Poppins', sans-serif; font-weight:600; font-size:0.92rem; margin-bottom:8px;}
+  input[type=text], input[type=password], input[type=search], select{
+    width:100%;
+    background:rgba(255,255,255,0.1);
+    border:1.5px solid rgba(255,255,255,0.3);
+    border-radius:14px;
+    padding:12px 16px;
+    color:var(--text);
+    font-family:'Inter', sans-serif;
+    font-size:0.98rem;
+    transition:border-color 0.15s, background 0.15s, box-shadow 0.15s;
+  }
+  input::placeholder{color:rgba(255,255,255,0.5);}
+  input:focus, select:focus{
+    outline:none; border-color:var(--violet);
+    background:rgba(255,255,255,0.16);
+    box-shadow:0 0 0 4px rgba(155,93,229,0.25);
+  }
+  select{
+    appearance:none; -webkit-appearance:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:right 14px center; background-size:18px; cursor:pointer;
+  }
+  select option{background:#2a2450; color:var(--text);}
+  button{
+    font-family:'Poppins', sans-serif; font-size:0.98rem; font-weight:700; color:#fff;
+    background:rgba(255,255,255,0.14);
+    border:1.5px solid rgba(255,255,255,0.35);
+    border-radius:14px; padding:12px 22px; cursor:pointer;
+    box-shadow:0 8px 20px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.3);
+    transition:transform 0.12s, background 0.12s;
+  }
+  button:hover{transform:translateY(-2px); background:rgba(255,255,255,0.22);}
+  button:active{transform:translateY(0);}
+  button:disabled{opacity:0.6; cursor:default; transform:none;}
+  button.ghost{padding:9px 16px; font-size:0.88rem; box-shadow:none;}
+
+  .login-row{display:flex; gap:12px; align-items:flex-end; flex-wrap:wrap;}
+  .login-row .field{flex:1 1 220px; margin:0;}
+  .error{color:#ffb4b4; font-size:0.9rem; margin-top:12px; min-height:1.2em;}
+  .hidden{display:none !important;}
+
+  .toolbar{display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin-bottom:18px;}
+  .toolbar .grow{flex:1 1 220px;}
+  .toolbar select{width:auto; min-width:150px; padding-right:40px;}
+  .chips{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px;}
+  .chip{
+    font-family:'Inter', sans-serif; font-weight:600; font-size:0.85rem;
+    padding:7px 14px; border-radius:999px; cursor:pointer;
+    background:rgba(255,255,255,0.08); border:1.5px solid rgba(255,255,255,0.25); color:var(--text);
+    box-shadow:none; transition:background 0.12s, border-color 0.12s;
+  }
+  .chip:hover{transform:none; background:rgba(255,255,255,0.16);}
+  .chip.active{background:rgba(255,255,255,0.22); border-color:#fff;}
+  .chip .n{opacity:0.7; margin-left:6px; font-weight:500;}
+
+  .stats{display:flex; gap:16px; flex-wrap:wrap; color:var(--text-dim); font-size:0.9rem; margin-bottom:18px;}
+  .stats strong{color:var(--text);}
+
+  .list{display:grid; gap:14px;}
+  .idea{
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.22);
+    border-radius:18px; padding:18px 20px;
+  }
+  .idea-head{display:flex; flex-wrap:wrap; gap:8px 12px; align-items:center; margin-bottom:10px;}
+  .who{font-family:'Poppins', sans-serif; font-weight:700; font-size:1.02rem;}
+  .klasse{
+    font-size:0.8rem; font-weight:600; padding:3px 10px; border-radius:999px;
+    background:rgba(255,255,255,0.14); border:1px solid rgba(255,255,255,0.3);
+  }
+  .kat{font-size:0.8rem; font-weight:700; padding:3px 10px; border-radius:999px; border:1px solid transparent;}
+  .kat[data-kat="Finanzierung"]{background:rgba(6,214,160,0.18); border-color:rgba(6,214,160,0.55); color:#8ff5d7;}
+  .kat[data-kat="Abiball"]{background:rgba(155,93,229,0.2); border-color:rgba(155,93,229,0.6); color:#d9bdfb;}
+  .kat[data-kat="Abizeitung"]{background:rgba(78,168,222,0.2); border-color:rgba(78,168,222,0.6); color:#b6dcf5;}
+  .kat[data-kat="Abi Merch"]{background:rgba(255,209,102,0.18); border-color:rgba(255,209,102,0.55); color:#ffe6a6;}
+  .kat[data-kat="Projekte"]{background:rgba(255,107,107,0.18); border-color:rgba(255,107,107,0.55); color:#ffc4c4;}
+  .when{margin-left:auto; color:var(--text-dim); font-size:0.8rem;}
+  .text{white-space:pre-wrap; word-break:break-word; line-height:1.55; margin:0;}
+  .empty{color:var(--text-dim); text-align:center; padding:30px 0;}
+
+  @media (max-width:560px){
+    .card{padding:26px 20px 22px; border-radius:20px;}
+    h1{font-size:1.7rem;}
+    .toolbar select{width:100%;}
+    .when{margin-left:0; width:100%;}
+  }
+</style>
+</head>
+<body>
+
+<div class="bg" aria-hidden="true">
+  <div class="blob blob1"></div>
+  <div class="blob blob2"></div>
+  <div class="blob blob3"></div>
+</div>
+
+<div class="wrap">
+
+  <div class="card" id="loginCard">
+    <span class="eyebrow">Gymnasium Dresden Bühlau</span>
+    <h1>Abi Orga Ideen — Übersicht</h1>
+    <p class="subtitle">Alle eingereichten Ideen auf einen Blick. Bitte Zugangscode vom Orga-Team eingeben.</p>
+    <form id="loginForm">
+      <div class="login-row">
+        <div class="field">
+          <label for="code">Zugangscode</label>
+          <input type="password" id="code" autocomplete="current-password" placeholder="Zugangscode" required>
+        </div>
+        <button type="submit" id="loginBtn">Ideen anzeigen</button>
+      </div>
+      <div class="error" id="loginError"></div>
+    </form>
+  </div>
+
+  <div class="card hidden" id="listCard">
+    <span class="eyebrow">Gymnasium Dresden Bühlau</span>
+    <h1>Abi Orga Ideen — Übersicht</h1>
+    <p class="subtitle">Alle eingereichten Ideen, sortiert nach Datum (neueste zuerst).</p>
+
+    <div class="stats">
+      <span><strong id="countTotal">0</strong> Ideen insgesamt</span>
+      <span><strong id="countShown">0</strong> angezeigt</span>
+      <span id="lastUpdate"></span>
+    </div>
+
+    <div class="chips" id="chips"></div>
+
+    <div class="toolbar">
+      <div class="grow"><input type="search" id="search" placeholder="Suchen (Name, Klasse, Idee)…"></div>
+      <select id="klasseFilter">
+        <option value="">Alle Klassen</option>
+      </select>
+      <button type="button" class="ghost" id="reloadBtn">Neu laden</button>
+      <button type="button" class="ghost" id="csvBtn">Als CSV speichern</button>
+      <button type="button" class="ghost" id="logoutBtn">Abmelden</button>
+    </div>
+
+    <div class="error" id="listError"></div>
+    <div class="list" id="list"></div>
+  </div>
+
+</div>
+
+<script>
+  // ── Verbindung zur Datenbank (Supabase) ─────────────────────────────
+  // Dieselben Werte wie in index.html eintragen.
+  const SUPABASE_URL = 'https://DEIN-PROJEKT.supabase.co';
+  const SUPABASE_ANON_KEY = 'DEIN-ANON-KEY';
+  // ────────────────────────────────────────────────────────────────────
+
+  const KATEGORIEN = ['Finanzierung', 'Abiball', 'Abizeitung', 'Abi Merch', 'Projekte'];
+  const STORAGE_KEY = 'abi-orga-zugangscode';
+
+  const loginCard = document.getElementById('loginCard');
+  const listCard = document.getElementById('listCard');
+  const loginForm = document.getElementById('loginForm');
+  const loginBtn = document.getElementById('loginBtn');
+  const loginError = document.getElementById('loginError');
+  const listError = document.getElementById('listError');
+  const listEl = document.getElementById('list');
+  const chipsEl = document.getElementById('chips');
+  const searchEl = document.getElementById('search');
+  const klasseFilter = document.getElementById('klasseFilter');
+
+  let ideen = [];
+  let aktiveKategorie = '';
+
+  function esc(str) {
+    return String(str ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+  function fmtDate(iso) {
+    const d = new Date(iso);
+    if (isNaN(d)) return '';
+    return d.toLocaleString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+  }
+  function getCode() {
+    try { return sessionStorage.getItem(STORAGE_KEY) || ''; } catch (e) { return ''; }
+  }
+  function setCode(code) {
+    try { code ? sessionStorage.setItem(STORAGE_KEY, code) : sessionStorage.removeItem(STORAGE_KEY); } catch (e) {}
+  }
+
+  async function ladeIdeen(code) {
+    if (SUPABASE_URL.includes('DEIN-PROJEKT') || SUPABASE_ANON_KEY === 'DEIN-ANON-KEY') {
+      throw new Error('Supabase ist noch nicht eingerichtet (SUPABASE_URL / SUPABASE_ANON_KEY in uebersicht.html eintragen).');
+    }
+    const res = await fetch(SUPABASE_URL + '/rest/v1/rpc/ideen_abrufen', {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ code })
+    });
+    if (!res.ok) {
+      let msg = 'HTTP ' + res.status;
+      try {
+        const j = await res.json();
+        if (j && j.message) msg = j.message;
+      } catch (e) {}
+      const err = new Error(msg);
+      err.falscherCode = /zugangscode/i.test(msg);
+      throw err;
+    }
+    return await res.json();
+  }
+
+  function renderChips() {
+    const counts = {};
+    KATEGORIEN.forEach(k => counts[k] = 0);
+    ideen.forEach(i => { counts[i.kategorie] = (counts[i.kategorie] || 0) + 1; });
+    const alle = [['', 'Alle', ideen.length], ...KATEGORIEN.map(k => [k, k, counts[k] || 0])];
+    chipsEl.innerHTML = alle.map(([val, label, n]) =>
+      `<button type="button" class="chip${val === aktiveKategorie ? ' active' : ''}" data-kat="${esc(val)}">${esc(label)}<span class="n">${n}</span></button>`
+    ).join('');
+  }
+
+  function renderKlassen() {
+    const current = klasseFilter.value;
+    const klassen = [...new Set(ideen.map(i => i.klasse))].sort((a, b) => a.localeCompare(b, 'de', { numeric: true }));
+    klasseFilter.innerHTML = '<option value="">Alle Klassen</option>' +
+      klassen.map(k => `<option value="${esc(k)}">${esc(k)}</option>`).join('');
+    if (klassen.includes(current)) klasseFilter.value = current;
+  }
+
+  function gefiltert() {
+    const q = searchEl.value.trim().toLowerCase();
+    const kl = klasseFilter.value;
+    return ideen.filter(i =>
+      (!aktiveKategorie || i.kategorie === aktiveKategorie) &&
+      (!kl || i.klasse === kl) &&
+      (!q || [i.name, i.klasse, i.kategorie, i.idee].join(' ').toLowerCase().includes(q))
+    );
+  }
+
+  function renderList() {
+    const rows = gefiltert();
+    document.getElementById('countTotal').textContent = ideen.length;
+    document.getElementById('countShown').textContent = rows.length;
+    if (!rows.length) {
+      listEl.innerHTML = '<div class="empty">Keine Ideen gefunden.</div>';
+      return;
+    }
+    listEl.innerHTML = rows.map(i => `
+      <article class="idea">
+        <div class="idea-head">
+          <span class="who">${esc(i.name)}</span>
+          <span class="klasse">Klasse ${esc(i.klasse)}</span>
+          <span class="kat" data-kat="${esc(i.kategorie)}">${esc(i.kategorie)}</span>
+          <span class="when">${esc(fmtDate(i.erstellt_am))}</span>
+        </div>
+        <p class="text">${esc(i.idee)}</p>
+      </article>`).join('');
+  }
+
+  function renderAll() {
+    renderChips();
+    renderKlassen();
+    renderList();
+    document.getElementById('lastUpdate').textContent = 'Stand: ' + fmtDate(new Date().toISOString());
+  }
+
+  async function anzeigen(code) {
+    listError.textContent = '';
+    try {
+      ideen = await ladeIdeen(code);
+      setCode(code);
+      loginCard.classList.add('hidden');
+      listCard.classList.remove('hidden');
+      renderAll();
+      return true;
+    } catch (err) {
+      console.error(err);
+      if (err.falscherCode) {
+        setCode('');
+        listCard.classList.add('hidden');
+        loginCard.classList.remove('hidden');
+        loginError.textContent = 'Falscher Zugangscode.';
+      } else if (listCard.classList.contains('hidden')) {
+        loginError.textContent = 'Laden fehlgeschlagen: ' + err.message;
+      } else {
+        listError.textContent = 'Neu laden fehlgeschlagen: ' + err.message;
+      }
+      return false;
+    }
+  }
+
+  loginForm.addEventListener('submit', async e => {
+    e.preventDefault();
+    loginError.textContent = '';
+    loginBtn.disabled = true;
+    loginBtn.textContent = 'Lädt…';
+    await anzeigen(document.getElementById('code').value.trim());
+    loginBtn.disabled = false;
+    loginBtn.textContent = 'Ideen anzeigen';
+  });
+
+  chipsEl.addEventListener('click', e => {
+    const chip = e.target.closest('.chip');
+    if (!chip) return;
+    aktiveKategorie = chip.dataset.kat;
+    renderChips();
+    renderList();
+  });
+  searchEl.addEventListener('input', renderList);
+  klasseFilter.addEventListener('change', renderList);
+
+  document.getElementById('reloadBtn').addEventListener('click', async e => {
+    e.target.disabled = true;
+    await anzeigen(getCode());
+    e.target.disabled = false;
+  });
+
+  document.getElementById('logoutBtn').addEventListener('click', () => {
+    setCode('');
+    ideen = [];
+    listCard.classList.add('hidden');
+    loginCard.classList.remove('hidden');
+    document.getElementById('code').value = '';
+  });
+
+  document.getElementById('csvBtn').addEventListener('click', () => {
+    const rows = gefiltert();
+    const cell = v => '"' + String(v ?? '').replace(/"/g, '""') + '"';
+    const lines = [['Datum', 'Name', 'Klasse', 'Kategorie', 'Idee'].map(cell).join(';')];
+    rows.forEach(i => lines.push([fmtDate(i.erstellt_am), i.name, i.klasse, i.kategorie, i.idee].map(cell).join(';')));
+    const blob = new Blob(['﻿' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'abi-orga-ideen.csv';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(a.href);
+  });
+
+  // Beim Öffnen: gespeicherten Code (nur für diesen Tab) direkt nutzen
+  if (getCode()) anzeigen(getCode());
+</script>
+
+</body>
+</html>

@@ -34,6 +34,18 @@
     overflow-x:hidden;
   }
   .bg{position:fixed; inset:0; overflow:hidden; z-index:0; pointer-events:none;}
+  /* Ränder oben/unten in die Hintergrundfarbe auslaufen lassen:
+     Safari färbt Status- und Adressleiste nach den Randpixeln der Seite. */
+  .bg::before, .bg::after{
+    content:"";
+    position:absolute;
+    left:0; right:0;
+    height:150px;
+    z-index:1;
+    pointer-events:none;
+  }
+  .bg::before{top:0; background:linear-gradient(to bottom, #1b1730 0%, rgba(27,23,48,0.9) 20%, rgba(27,23,48,0) 100%);}
+  .bg::after{bottom:0; background:linear-gradient(to top, #1b1730 0%, rgba(27,23,48,0.9) 20%, rgba(27,23,48,0) 100%);}
   .blob{position:absolute; border-radius:50%; filter:blur(70px); opacity:0.45;}
   .blob1{width:420px; height:420px; background:var(--coral); top:-140px; left:-120px;}
   .blob2{width:380px; height:380px; background:var(--sky); bottom:-160px; right:-100px;}
